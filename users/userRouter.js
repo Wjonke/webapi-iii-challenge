@@ -1,5 +1,4 @@
 const express = require('express');
-
 const router = express.Router();
 const db =require( "./userDb")
 
@@ -12,7 +11,7 @@ const validateUserId = (req, res, next) => {
 }
 
 const validateUser = (req, res, next) => {
-  console.log(req.body)
+ 
   if(!req.body || req.body === {}){
     res.status(400).send({message: "missing data"})
   }
@@ -31,49 +30,75 @@ const validatePost = (req, res, next) => {
   }
   next()
 }
+/////^^^^^^^^^//////custom middleware////^^^^^^^^^^////////
+
 
 
 /////////////////////Routes///////////////////////////
 
+//////Get a list of users///////
+router.get('/', (req, res) => {
+  db.get("users")
+  .then(users => res.send(users))
+  .catch(err=> console.error(err))
+  });
+  
+
+//get one user by id - cleared tests
+router.get('/:id', validateUserId, (req, res) => {
+  const ID = req.params.id;
+
+  db.getById(ID)
+    .then(user => {
+      res.status(200).json(user);
+    })
+    .catch(error => {
+      res.status(500).json({ message: "Could not get the specified user by ID" });
+    });
+});
+//create new user//
 router.post('/', validateUser, (req, res) => {
 const info = req.body;
-db.insert(info).then(cb => res.send(cb)).catch(err => console.error(err))
+db.insert(info)
+  .then(user => res.send(user))
+  .catch(err => console.error(err))
 });
 
-// router.post('/:id/posts', (req, res) => {
-//   const id = req.params.id;
-//   let user;
-//   let posty = req.body.post
-  
-//   db.getById(id).then(cb => user = cb; console.log(user)).catch(err => console.error(err)).then(() =>{
-//     db.update(id, {...user, posts:[...user.post,{posty}]}).then(cb => res.send(cb)).catch(err => console.error(err))
 
-//   })
 
-  
+
+
+//find posts of user by ID//
+
+// router.get('/:id/posts', (req, res) => {
+
 // });
 
-router.get('/', (req, res) => {
-db.get("users").then(cb => res.send(cb)).catch(err=> console.error(err))
-});
 
-router.get('/:id', (req, res) => {
+//delete post of a user by post id?
+// router.delete('/:id', (req, res) => {
 
-});
+// });
 
-router.get('/:id/posts', (req, res) => {
+//edit a post 
+// router.put('/:id', (req, res) => {
 
-});
-
-router.delete('/:id', (req, res) => {
-
-});
-
-router.put('/:id', (req, res) => {
-
-});
+// });
 
 
+
+//create a user's post//
+router.post('/:id/posts', validateUserId, validatePost,  (req, res) => {
+  const id = req.params.id;
+  const text = req.body.text;
+    console.log(id);
+    console.log(req.body.text);
+
+  db.insert(text)
+    .then(posts => {res.status(200).json(posts)})
+    .catch(err => console.error(err))
+
+  });
 
 
 
