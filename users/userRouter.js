@@ -36,7 +36,7 @@ const validatePost = (req, res, next) => {
 
 /////////////////////Routes///////////////////////////
 
-//////Get a list of users///////
+//////Get a list of users- cleared tests
 router.get('/', (req, res) => {
   db.get("users")
   .then(users => res.send(users))
@@ -56,7 +56,10 @@ router.get('/:id', validateUserId, (req, res) => {
       res.status(500).json({ message: "Could not get the specified user by ID" });
     });
 });
-//create new user//
+
+
+
+//create new user// - cleared tests
 router.post('/', validateUser, (req, res) => {
 const info = req.body;
 db.insert(info)
@@ -66,13 +69,22 @@ db.insert(info)
 
 
 
+//find posts of user by ID - cleared tests
+router.get('/:id/posts', validateUser,  (req, res) => {
+  const ID = req.params.id;
+  db.getUserPosts(ID)
+    .then(posts => {
+      res.status(200).json(posts);
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({ message: "Users posts could not be retrieved" });
+    });
+});
 
 
-//find posts of user by ID//
 
-// router.get('/:id/posts', (req, res) => {
-
-// });
 
 
 //delete post of a user by post id?
