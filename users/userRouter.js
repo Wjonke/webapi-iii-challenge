@@ -21,15 +21,7 @@ const validateUser = (req, res, next) => {
   next()
 }
 
-const validatePost = (req, res, next) => {
-  if(!req.body){
-    res.status(400).send({message: "missing data"})
-  }
-  if(!req.body.text){
-    res.status(400).send({message: "missing text field"})
-  }
-  next()
-}
+
 /////^^^^^^^^^//////custom middleware////^^^^^^^^^^////////
 
 
@@ -121,22 +113,6 @@ router.put('/:id', validateUserId, (req, res) => {
     .then(updatedPost => {res.status(200).json(updatedPost);})
     .catch(error => {res.status(500).json({ message: "Could not update the user" });
     });
-  });
-
-
-
-
-//create a user's post//
-router.post('/:id/posts', validateUserId, validatePost,  (req, res) => {
-  const id = req.params.id;
-  const text = req.body.text;
-    console.log(id);
-    console.log(req.body.text);
-
-  db.insert(text)
-    .then(posts => {res.status(200).json(posts)})
-    .catch(err => console.error(err))
-
   });
 
 
