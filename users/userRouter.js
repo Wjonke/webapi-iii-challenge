@@ -112,10 +112,17 @@ router.delete("/:id", validateUserId, (req, res) => {
 });
 
 
-//edit a post 
-router.put('/:id', (req, res) => {
+//edit a user - Tests passed
+router.put('/:id', validateUserId, (req, res) => {
+  const ID = req.params.id;
+  const changes = req.body;
+  
+  db.update(ID, changes)
+    .then(updatedPost => {res.status(200).json(updatedPost);})
+    .catch(error => {res.status(500).json({ message: "Could not update the user" });
+    });
+  });
 
-});
 
 
 
