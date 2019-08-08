@@ -85,17 +85,37 @@ router.get('/:id/posts', validateUser,  (req, res) => {
 
 
 
+//delete  a user by id - Tests passed
+router.delete("/:id", validateUserId, (req, res) => {
+  const ID = req.params.id;
+  let selectedUser;
+//find user and set result to Selected user
+  db.getById(ID)
+    .then(user => {
+      selectedUser = user;
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({ message: "There was an error finding that user by ID" });
+    });
+//take selected user and run delete logic
+    db.remove(ID)
+    .then(user => {
+      if (user) {
+        res.status(200).json(selectedUser);
+      }
+    })
+    .catch(error => {
+      res.status(500).json({ message: "Could not delete a user with that ID" });
+    });
+});
 
-
-//delete post of a user by post id?
-// router.delete('/:id', (req, res) => {
-
-// });
 
 //edit a post 
-// router.put('/:id', (req, res) => {
+router.put('/:id', (req, res) => {
 
-// });
+});
 
 
 
